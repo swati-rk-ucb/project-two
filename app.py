@@ -84,6 +84,8 @@ def user_filter(date=None, region=None, tw=None, mag=None):
 				timeseries_data[dt] = count+1
 			else:
 				timeseries_data[dt] = 1
+			#remove _id
+			data.pop("_id", None)
 			all_events.append(data)
 
 	complete_data = {
