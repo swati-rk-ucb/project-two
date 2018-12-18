@@ -41,23 +41,31 @@ def index():
 @app.route("/filter/<date>/<region>")
 @app.route("/filter/<date>/<region>/<tw>")
 @app.route("/filter/<date>/<region>/<tw>/<mag>")
+# when data is not filtered on date, api call /filter/0 or /filter
+# default value for filters when not used - 
+#	date = 0
+#	region = any
+#	tw = -1 (Stands for tsunami warning)
+#	mag = skip (stands for magnitude)
 def user_filter(date=None, region=None, tw=None, mag=None):
 	user_fi = {}
-	if (date is not None and date is not 0):
+	if (date is not None and date != '0'):
 		user_fi['formatted_only_date'] = str(date)
-	if (region is not None and region is not 'any'):
+	if (region is not None and region != 'any'):
 		user_fi['region'] = str(region)
-	if (tw is not None):
+	if (tw is not None and tw != '-1'):
 		user_fi['tsunami'] = int(tw)
+	if (mag is not None):
+		inner_condition = {'$gt' : float(mag)}
+		user_fi['magnitude'] = inner_condition
 	
+	print(user_fi)
 	if (user_fi is not None):
 		res = filter_response.find(user_fi)
 		print(filter_response.count_documents(user_fi))
 	else:
 		res = filter_response.find()
 	
-	#data = filter_response.find({"formatted_only_date" : "2018-12-18"})
-	#print(filter_response.count_documents({"formatted_only_date" : "2018-12-18"}))
 	return dumps(res)
 
 if __name__ == "__main__":
