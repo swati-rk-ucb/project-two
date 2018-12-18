@@ -62,11 +62,40 @@ def user_filter(date=None, region=None, tw=None, mag=None):
 	print(user_fi)
 	if (user_fi is not None):
 		res = filter_response.find(user_fi)
-		print(filter_response.count_documents(user_fi))
 	else:
 		res = filter_response.find()
 	
-	return dumps(res)
+	# prepare data
+	all_events = []
+	tsunami_triggered_count = 0
+	tsunami_not_triggered_count = 0
+	timeseries_data = {}
+	if (res is not None):
+		for data in res:
+			if (data["tsunami"] == 1):
+				tsunami_triggered_count = tsunami_triggered_count + 1
+			else:
+				tsunami_not_triggered_count = tsunami_not_triggered_count + 1
+            
+            # prepare dictionary for date and number of earthquakes
+			dt = data["formatted_only_date"]
+			if dt  in timeseries_data:
+				count = timeseries_data[dt]
+				timeseries_data[dt] = count+1
+			else:
+				timeseries_data[dt] = 1
+			all_events.append(data)
+
+	complete_data = {
+        "count" : len(all_events),
+        "all_events" : all_events,
+        "tsunami_warning_count" : {
+            "tsunami_warning" : tsunami_triggered_count, 
+            "no_tsunami_warning" : tsunami_not_triggered_count
+        },
+        "timeseries_data" : timeseries_data
+    }	
+	return dumps(complete_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
