@@ -13,7 +13,7 @@ client = pymongo.MongoClient(conn)
 db = client.raw_data
 filter_response = db.filter_response
 
-def trim_response(res, flag):
+def trim_response(res):
     all_events = []
     tsunami_triggered_count = 0
     tsunami_not_triggered_count = 0
@@ -35,8 +35,8 @@ def trim_response(res, flag):
             else:
                 timeseries_data[dt] = 1
             all_events.append(event)
-            if (flag == 1):
-                save_event(generate_event(feature))
+            save_event(event)
+            event.pop("_id", None)
     else:
         print("Response is empty") 
     

@@ -6,6 +6,8 @@ import json
 from process_response import trim_response
 import pprint
 from bson.json_util import dumps
+import datetime
+from datetime import timedelta
 
 # Flask Setup
 app = Flask(__name__)
@@ -29,14 +31,15 @@ def index():
 		#collection.drop()
 		collection.insert_one(response)
 		filter_response.drop()
-		response_data = trim_response(response, 1)
+		response_data = trim_response(response)
 		processed_collection.drop()
-		processed_collection.insert_one(trim_response(response, 0))
+		processed_collection.insert_one(response_data)
+		response_data.pop('_id', response_data)
 	except Exception as e:
 		print(e)
 
 	return jsonify(response_data)
-
+@app.route("/filter")
 @app.route("/filter/<date>")
 @app.route("/filter/<date>/<region>")
 @app.route("/filter/<date>/<region>/<tw>")
@@ -65,6 +68,10 @@ def user_filter(date=None, region=None, tw=None, mag=None):
 	else:
 		res = filter_response.find()
 	
+	#print(datetime.datetime.strptime('2018-12-19', '%Y-%m-%d').date())
+	#current_date = datetime.datetime.strptime('2018-12-19', '%Y-%m-%d').date()
+	#last_week = current_date-timedelta(days=7)
+	#print(last_week)
 	# prepare data
 	all_events = []
 	tsunami_triggered_count = 0
