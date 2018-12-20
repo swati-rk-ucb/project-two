@@ -6,7 +6,7 @@ import json
 from process_response import trim_response
 import pprint
 from bson.json_util import dumps
-import datetime
+import datetime, time
 from datetime import timedelta
 
 # Flask Setup
@@ -25,6 +25,10 @@ filter_response = db.filter_response
 #home route
 @app.route("/")
 def index():
+	return render_template("index.html")
+
+@app.route("/all")
+def all():
 	response_data = None
 	try:
 		response = requests.get("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson").json()
@@ -39,22 +43,36 @@ def index():
 		print(e)
 
 	return jsonify(response_data)
+
 @app.route("/filter")
-@app.route("/filter/<date>")
-@app.route("/filter/<date>/<region>")
-@app.route("/filter/<date>/<region>/<tw>")
-@app.route("/filter/<date>/<region>/<tw>/<mag>")
+@app.route("/filter/<dat>")
+@app.route("/filter/<dat>/<region>")
+@app.route("/filter/<dat>/<region>/<tw>")
+@app.route("/filter/<dat>/<region>/<tw>/<mag>")
 # when data is not filtered on date, api call /filter/0 or /filter
 # default value for filters when not used - 
 #	date = 0
 #	region = any
 #	tw = -1 (Stands for tsunami warning)
 #	mag = skip (stands for magnitude)
-def user_filter(date=None, region=None, tw=None, mag=None):
+def user_filter(dat=None, region=None, tw=None, mag=None):
 	user_fi = {}
-	if (date is not None and date != '0'):
-		user_fi['formatted_only_date'] = str(date)
-	if (region is not None and region != 'any'):
+	print(dat)
+	if (dat is not None and dat != '0'):
+		#generate date range		
+		date_now = datetime.datetime.today()
+		date_start = None
+		if (dat.strip() == "Past 7 Days"):
+			date_start = date_now - timedelta(days=7)
+		elif (dat == 'Past 15 Days'):
+			date_start = date_now - timedelta(days=17)
+		else:
+			date_start = date_now - timedelta(days=31)
+		date_to_be_used = datetime.datetime(date_start.year, date_start.month, date_start.day)
+		milis = int(round(date_to_be_used.timestamp()*1000))
+		date_condition = {'$gt' : milis}
+		user_fi['date'] = date_condition
+	if (region is not None and region != 'All'):
 		user_fi['region'] = str(region)
 	if (tw is not None and tw != '-1'):
 		user_fi['tsunami'] = int(tw)
