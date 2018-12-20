@@ -50,7 +50,7 @@ function timeScatterPlot(data) {
         type: "linear"
       },
       height: 300,
-      width: 500
+      width: 325
     };
 
     Plotly.newPlot("plot", data, layout);
