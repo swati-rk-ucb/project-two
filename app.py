@@ -74,8 +74,11 @@ def user_filter(dat=None, region=None, tw=None, mag=None):
 		user_fi['date'] = date_condition
 	if (region is not None and region != 'All'):
 		user_fi['region'] = str(region)
-	if (tw is not None and tw != '-1'):
-		user_fi['tsunami'] = int(tw)
+	if (tw is not None and tw != 'All'):
+		twarn = 0
+		if (tw == 'Tsunami warning issued'):
+			twarn = 1
+		user_fi['tsunami'] = twarn
 	if (mag is not None):
 		inner_condition = {'$gt' : float(mag)}
 		user_fi['magnitude'] = inner_condition
@@ -85,7 +88,7 @@ def user_filter(dat=None, region=None, tw=None, mag=None):
 		res = filter_response.find(user_fi)
 	else:
 		res = filter_response.find()
-		
+
 	# prepare data
 	all_events = []
 	tsunami_triggered_count = 0

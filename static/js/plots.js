@@ -8,8 +8,9 @@ function init() {
 function filterCharts(id, selValue) {
   var date_filter = d3.select("#date-select").node().value;
   var region_filter = d3.select("#region-select").node().value;
+  var tsunami_filter = d3.select("#tw-select").node().value;
   //build url to filter
-  var url = "/filter/"+date_filter+"/"+region_filter;
+  var url = "/filter/"+date_filter+"/"+region_filter + "/" + tsunami_filter;
 
   console.log(url);
   d3.json(url).then((data) => {
@@ -17,6 +18,22 @@ function filterCharts(id, selValue) {
   });
 }
 
+function filter_data(id, value) {
+  console.log(id);
+  var col = d3.select("." + id);
+  console.log(col.attr);
+  col.attr("class", "magnitude-col-sel");
+  var date_filter = d3.select("#date-select").node().value;
+  var region_filter = d3.select("#region-select").node().value;
+  var tsunami_filter = d3.select("#tw-select").node().value;
+  //build url to filter
+  var url = "/filter/"+date_filter+"/"+region_filter + "/" + tsunami_filter + "/" + value;
+
+  console.log(url);
+  d3.json(url).then((data) => {
+    timeScatterPlot(data);
+  });
+}
 
 function timeScatterPlot(data) {
   console.log("Number of records ", data.count);
@@ -50,7 +67,7 @@ function timeScatterPlot(data) {
         type: "linear"
       },
       height: 300,
-      width: 325
+      width: 525
     };
 
     Plotly.newPlot("plot", data, layout);

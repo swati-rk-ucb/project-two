@@ -1,0 +1,31 @@
+body {
+	background-color: #FFFFFF; 
+}
+.body-container {
+	width: 100%;
+}
+
+.margin-col {
+	/*width: 5%;*/
+	vertical-align: center;
+}
+.page-header {
+	background-color: #EDEDED !important; 
+	padding: 10px;
+}
+.magnitude-col {
+	padding : 4px;
+	margin : 2px;
+}
+
+.magnitude-col-sel {
+	padding : 4px;
+	margin : 2px;
+	border : 1px solid #ccc;
+	background-color: #EDEDED;
+}
+
+.filter-heading-col {
+	padding : 4px;
+	margin : 2px;
+}
