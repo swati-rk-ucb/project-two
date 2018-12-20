@@ -85,11 +85,7 @@ def user_filter(dat=None, region=None, tw=None, mag=None):
 		res = filter_response.find(user_fi)
 	else:
 		res = filter_response.find()
-	
-	#print(datetime.datetime.strptime('2018-12-19', '%Y-%m-%d').date())
-	#current_date = datetime.datetime.strptime('2018-12-19', '%Y-%m-%d').date()
-	#last_week = current_date-timedelta(days=7)
-	#print(last_week)
+		
 	# prepare data
 	all_events = []
 	tsunami_triggered_count = 0

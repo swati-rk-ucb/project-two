@@ -29,7 +29,7 @@ function timeScatterPlot(data) {
     }
     var trace1 = {
       type: "scatter",
-      mode: "markers",
+      mode: "lines+markers",
       x: dates,
       y: counts,
       line: {
@@ -42,7 +42,7 @@ function timeScatterPlot(data) {
     var layout = {
       //title: `Number of Earthquakes per Day`,
       xaxis: {
-        range: [dates[0], dates[dates.length-1]],
+        range: [dates[dates.length], dates[0]],
         type: "date"
       },
       yaxis: {
