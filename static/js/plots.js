@@ -24,6 +24,7 @@ function filterCharts(id, selValue) {
   //build url to filter
   var url = "/filter/"+date_filter+"/"+region_filter + "/" + tsunami_filter;
 
+  clearOtherCells('mag0');
   console.log(url);
   d3.json(url).then((data) => {
     timeScatterPlot(data);
@@ -60,7 +61,6 @@ function clearOtherCells(id) {
   var mag_cols = ["mag1", "mag2", "mag3", "mag4", "mag5", "mag6","mag7"];
   for (var i = 0; i < mag_cols.length; i++) {
     if (id != mag_cols[i]) {
-      console.log(mag_cols[i]);
       var col = d3.select("#" + mag_cols[i]).style("background-color", "#ffffff");
     }
   }
@@ -88,7 +88,7 @@ function timeScatterPlot(data) {
     var data = [trace1];
 
     var layout = {
-      //title: `Number of Earthquakes per Day`,
+      title: `Number of Earthquakes per Day`,
       xaxis: {
         range: [dates[dates.length], dates[0]],
         type: "date"
@@ -131,7 +131,7 @@ function sigScatterPlot(data) {
     var data = [trace1];
 
     var layout = {
-      //title: `Number of Earthquakes per Day`,
+      title: `Number of Earthquakes by Significance`,
       xaxis: {
         autorange: true,
         type: "linear"
