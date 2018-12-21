@@ -94,6 +94,7 @@ def user_filter(dat=None, region=None, tw=None, mag=None):
 	tsunami_triggered_count = 0
 	tsunami_not_triggered_count = 0
 	timeseries_data = {}
+	significance_data = {}
 	if (res is not None):
 		for data in res:
 			if (data["tsunami"] == 1):
@@ -108,6 +109,14 @@ def user_filter(dat=None, region=None, tw=None, mag=None):
 				timeseries_data[dt] = count+1
 			else:
 				timeseries_data[dt] = 1
+
+			# prepare the dictionary for significance and count
+			sig = data["significance"]
+			if sig in significance_data:
+				cnt = significance_data[sig]
+				significance_data[sig] = cnt + 1
+			else:
+				significance_data[sig] = 1
 			#remove _id
 			data.pop("_id", None)
 			all_events.append(data)
@@ -119,7 +128,8 @@ def user_filter(dat=None, region=None, tw=None, mag=None):
             "tsunami_warning" : tsunami_triggered_count, 
             "no_tsunami_warning" : tsunami_not_triggered_count
         },
-        "timeseries_data" : timeseries_data
+        "timeseries_data" : timeseries_data,
+		"sig_data" : significance_data
     }	
 	return dumps(complete_data)
 

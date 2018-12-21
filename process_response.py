@@ -18,6 +18,7 @@ def trim_response(res):
     tsunami_triggered_count = 0
     tsunami_not_triggered_count = 0
     timeseries_data = {}
+    significance_data = {}
     if (res is not None):
         for feature in res["features"]:
             event = generate_event(feature)
@@ -34,9 +35,17 @@ def trim_response(res):
                 timeseries_data[dt] = count+1
             else:
                 timeseries_data[dt] = 1
+            # prepare the dictionary for significance and count
+            sig = str(feature["properties"]["sig"])
+            if sig in significance_data:
+                cnt = significance_data[sig]
+                significance_data[sig] = cnt + 1
+            else:
+                significance_data[sig] = 1
             all_events.append(event)
             save_event(event)
             event.pop("_id", None)
+            #print(significance_data)
     else:
         print("Response is empty") 
     
@@ -47,7 +56,8 @@ def trim_response(res):
             "tsunami_warning" : tsunami_triggered_count, 
             "no_tsunami_warning" : tsunami_not_triggered_count
         },
-        "timeseries_data" : timeseries_data
+        "timeseries_data" : timeseries_data,
+        "sig_data" : significance_data
     }
     #print(complete_data)
     return complete_data
