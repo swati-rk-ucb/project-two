@@ -29,8 +29,9 @@ function filterCharts(id, selValue) {
   d3.json(url).then((data) => {
     timeScatterPlot(data);
     sigScatterPlot(data);
+    replay(data);
     changeView(region_filter);
-    reset(data);
+    //animate();
   });
 }
 
@@ -54,6 +55,7 @@ function filter_data(id, value) {
   d3.json(url).then((data) => {
     timeScatterPlot(data);
     sigScatterPlot(data);
+    replay(data);
   });
 }
 
@@ -212,7 +214,7 @@ function changeView(loc) {
   else {
       map.animateTo({
           center: [0,0],
-          zoom: 1.5,
+          zoom: 1.3,
           pitch: 0,
           bearing: 0,
         }, {
@@ -266,31 +268,40 @@ function markers(data){
           marker = new maptalks.Marker([location[0], location[1]], {
           'symbol' :{
               'markerType' : 'ellipse',
-              'markerWidth' : magnitude,
-              'markerHeight' : magnitude,
+              'markerWidth' : magnitude*3,
+              'markerHeight' : magnitude*3,
               'markerFill' : colorsMarkers(magnitude),
               'markerFillOpacity' : 1,
               'markerLineColor' : "#00000",
               'markerLineWidth' : .25
               }
           }).addTo(layer);
-      animate(magnitude);
-      function animate(mag) {
-          marker.animate({
-              'symbol': {
-                  'markerWidth' : mag*3,
-                  'markerHeight' : mag*3
-              }
-          }, {
-              duration: 10000,
-          });
-      }
   }
+}    
+
+function replay(data){
+  reset(data);
+  add_layer(data);
+  //animate(data);
 }
 
+// function animate() {
+//   marker.animate({
+//     'symbol': {
+//         'markerWidth' : magnitude*3,
+//         'markerHeight' : magnitude*3
+//         }
+//       }, {
+//         duration: 10000,
+//       });
+// }
+
+function add_layer(data){
+  layer = new maptalks.VectorLayer('vector').addTo(map);
+  markers(data);
+}
 function reset(data) {
-    marker= [];
-    markers(data);
+    map.removeLayer(layer)
     };
 
 init();
