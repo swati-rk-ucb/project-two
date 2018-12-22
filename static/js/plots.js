@@ -31,7 +31,6 @@ function filterCharts(id, selValue) {
     sigScatterPlot(data);
     replay(data);
     changeView(region_filter);
-    //animate();
   });
 }
 
@@ -282,19 +281,8 @@ function markers(data){
 function replay(data){
   reset(data);
   add_layer(data);
-  //animate(data);
 }
 
-// function animate() {
-//   marker.animate({
-//     'symbol': {
-//         'markerWidth' : magnitude*3,
-//         'markerHeight' : magnitude*3
-//         }
-//       }, {
-//         duration: 10000,
-//       });
-// }
 
 function add_layer(data){
   layer = new maptalks.VectorLayer('vector').addTo(map);
